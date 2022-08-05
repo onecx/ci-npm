@@ -8,7 +8,7 @@ jobs:
     name: build and push
     runs-on: [ self-hosted, aws ]
     container:
-      image: ghcr.io/1000kit/node-build-image:v12
+      image: ghcr.io/1000kit/node-build-image:v16
       options: --user root
     env:
       DOCKER_CONFIG: $HOME/.docker
