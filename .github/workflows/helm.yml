@@ -1,4 +1,4 @@
-name: quarkus
+name: angular
 
 on:
   workflow_call:
