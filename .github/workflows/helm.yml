@@ -33,7 +33,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: package
-        path: target      
+        path: .      
     - name: helm build
       run: samo project helm build -v debug
     - name: helm push

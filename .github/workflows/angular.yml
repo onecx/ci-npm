@@ -41,8 +41,8 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: package
-        path:
-          - package.json      
-          - dist/
+        path: |
+            package.json      
+            dist/
         retention-days: 1
         if-no-files-found: ignore
