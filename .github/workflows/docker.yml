@@ -8,7 +8,7 @@ jobs:
     name: build and push
     runs-on: [ self-hosted, aws ]
     container:
-      image: ghcr.io/1000kit/node-build-image:v16
+      image: ghcr.io/lorislab/samo:3.1.0
       options: --user root
     env:
       DOCKER_CONFIG: $HOME/.docker
@@ -40,7 +40,5 @@ jobs:
         password: ${{ secrets.HARBOR_TOKEN }}        
     - name: docker build
       run: samo project docker build -v debug
-    - name: Integration test
-      run: mvn -B failsafe:integration-test failsafe:verify --file pom.xml
     - name: docker push
       run: samo project docker push -v debug 
