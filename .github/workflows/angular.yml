@@ -26,7 +26,6 @@ jobs:
     - name: Get project version
       id: version
       run: |
-        ls -all
         tmp=$(samo project version)
         echo '::set-output name=VERSION::$tmp'
     - name: Set project version
