@@ -1,0 +1,48 @@
+name: angular
+
+on:
+  workflow_call:
+
+jobs:
+  maven:
+    name: build and test
+    runs-on: [ self-hosted, aws ]
+    container:
+      image: ghcr.io/1000kit/node-build-image:v1-21.3-java11
+      options: --user root
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Get npm cache directory
+      id: npm-cache-dir
+      run: |
+        echo "::set-output name=dir::$(npm config get cache)"
+    - uses: actions/cache@v3
+      id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+      with:
+        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-     
+    - name: Get project version
+      id: version
+      run: |
+        tmp=$(samo project version)
+        echo '::set-output name=VERSION::$tmp'
+    - name: Set project version
+      run: echo "$(jq --arg version "${{ steps.version.outputs.VERSION }}" '.version=$version' package.json)" > package.json
+    - name: Check project
+      run: npm run lint
+    - name: Build project
+      run: npm run build
+    - name: Test project
+      run: npm run test:ci
+    - uses: actions/upload-artifact@v3
+      with:
+        name: package
+        path:
+          - package.json      
+          - dist/
+        retention-days: 1
+        if-no-files-found: ignore

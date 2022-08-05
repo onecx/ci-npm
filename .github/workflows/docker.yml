@@ -1,0 +1,46 @@
+name: quarkus
+
+on:
+  workflow_call:
+
+jobs:
+  docker:
+    name: build and push
+    runs-on: [ self-hosted, aws ]
+    container:
+      image: ghcr.io/1000kit/quarkus-build-image:v1-21.3-java11
+      options: --user root
+    env:
+      DOCKER_CONFIG: $HOME/.docker
+      SAMO_DOCKER_FILE: src/main/docker/Dockerfile
+      SAMO_DOCKER_REGISTRY: harbor.1000kit.org
+      SAMO_DOCKER_GROUP: '1000kit/'
+      SAMO_DOCKER_TAG_TEMPLATE_LIST: '{{ .Version }}'  
+      SAMO_DOCKER_RELEASE_REGISTRY: harbor.1000kit.org
+      SAMO_DOCKER_RELEASE_GROUP: '1000kit/'
+      SAMO_DOCKER_SKIP_OPENCONTAINERS_LABELS: 'false'
+      SAMO_DOCKER_CONTEXT: '.'
+      SAMO_DOCKER_SKIP_PULL: 'false'
+      SAMO_DOCKER_BUILD_PUSH: 'false'
+      SAMO_DOCKER_SKIP_DEV: 'false'
+      SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'      
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: actions/download-artifact@v3
+      with:
+        name: package
+        path: target
+    - name: Login to Harbor
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.SAMO_DOCKER_REGISTRY }}
+        username: ${{ secrets.HARBOR_USER }}
+        password: ${{ secrets.HARBOR_TOKEN }}        
+    - name: docker build
+      run: samo project docker build -v debug
+    - name: Integration test
+      run: mvn -B failsafe:integration-test failsafe:verify --file pom.xml
+    - name: docker push
+      run: samo project docker push -v debug 
