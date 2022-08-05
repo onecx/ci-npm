@@ -13,8 +13,8 @@ jobs:
     env:
       SAMO_DOCKER_REGISTRY: harbor.1000kit.org
       SAMO_DOCKER_RELEASE_REGISTRY: harbor.1000kit.org
-      SAMO_HELM_SOURCE_DIR: src/main/helm
-      SAMO_HELM_SOURCE_COPY: 'false'
+      SAMO_HELM_SOURCE_DIR: helm
+      SAMO_HELM_SOURCE_COPY: 'true'
       SAMO_HELM_PUSH_URL: 'https://harbor.1000kit.org/api/chartrepo/1000kit/charts'
       SAMO_HELM_REPO: 1000kit
       SAMO_HELM_REPO_URL: 'https://harbor.1000kit.org/chartrepo/1000kit/'

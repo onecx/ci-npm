@@ -12,7 +12,7 @@ jobs:
       options: --user root
     env:
       DOCKER_CONFIG: $HOME/.docker
-      SAMO_DOCKER_FILE: src/main/docker/Dockerfile
+      SAMO_DOCKER_FILE: Dockerfile
       SAMO_DOCKER_REGISTRY: harbor.1000kit.org
       SAMO_DOCKER_GROUP: '1000kit/'
       SAMO_DOCKER_TAG_TEMPLATE_LIST: '{{ .Version }}'  
